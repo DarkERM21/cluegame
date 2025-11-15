@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Juego de Pistas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Juego de Pistas 🔍</h1>
+
+<label for="seleccion">Elige la pista:</label>
+<select id="seleccion"></select>
+
+<p>Mensaje cifrado: <b id="mensaje"></b></p>
+
+<input id="respuesta" type="text" placeholder="Introduce contraseña" />
+<button id="btn">Enviar</button>
+
+<div id="pista"></div>
+
+<script>
+// URL pública de tu Google Sheet CSV
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vThmH-OqKJLvYcjgkCKe42x_Tcq1MKUwHehlnfzbH2IGLyDAEuaIN1JKqydxQHmxBFQsugdkO7qCc9E/pub?output=csv";
+
+async function cargarPistas() {
+    const resp = await fetch(SHEET_URL);
+    const text = await resp.text();
+
+    const filas = text.split("\n").map(f => f.split(","));
+    const pistas = {};
+
+    // La primera fila son los headers
+    for (let i = 1; i < filas.length; i++) {
+        const [id, cifrado, solucion, pista] = filas[i];
+        if(id) pistas[id] = { cifrado, solucion, pista };
+    }
+
+    return pistas;
+}
+
+function getPistaFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("pista"); // puede ser pista1, pista2, etc.
+}
+
+async function iniciarJuego() {
+    const pistas = await cargarPistas();
+    const select = document.getElementById("seleccion");
+    const mensaje = document.getElementById("mensaje");
+    const pistaDiv = document.getElementById("pista");
+    const input = document.getElementById("respuesta");
+    const btn = document.getElementById("btn");
+
+    // Llenar select
+    for (const id in pistas) {
+        const option = document.createElement("option");
+        option.value = id;
+        option.text = id;
+        select.appendChild(option);
+    }
+
+    // Leer parámetro de URL
+    const pistaInicial = getPistaFromURL() || select.value;
+    select.value = pistaInicial;
+
+    function mostrarPista(id) {
+        const p = pistas[id];
+        mensaje.innerText = p.cifrado;
+        pistaDiv.style.display = "none";
+        input.value = "";
+    }
+
+    select.onchange = () => mostrarPista(select.value);
+    mostrarPista(pistaInicial);
+
+    btn.onclick = () => {
+        const id = select.value;
+        const user = input.value.toLowerCase();
+        const correcta = pistas[id].solucion.toLowerCase();
+        if (user === correcta) {
+            pistaDiv.innerText = "🎉 ¡Correcto! Pista: " + pistas[id].pista;
+            pistaDiv.style.display = "block";
+        } else {
+            alert("Contraseña incorrecta");
+        }
+    };
+}
+
+iniciarJuego();
+</script>
+
+</body>
+</html>

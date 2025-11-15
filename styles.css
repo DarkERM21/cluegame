@@ -1,0 +1,73 @@
+/* --- Reset básico --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- Body --- */
+body {
+    font-family: 'Arial', sans-serif;
+    background: #f9f9f9;
+    color: #333;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* --- Título --- */
+h1 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* --- Select, input y botón --- */
+select, input, button {
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background-color: #3498db;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* --- Mensaje cifrado --- */
+#mensaje {
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+/* --- Pista revelada --- */
+#pista {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #eef;
+    border-radius: 8px;
+    border: 1px solid #ccd;
+    max-width: 500px;
+    text-align: center;
+    display: none;
+    font-size: 16px;
+}
+
+/* --- Contenedor responsive --- */
+.container {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
